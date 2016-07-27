@@ -15,43 +15,42 @@
 
 <% @nearby_buses.each_with_index do |bus, index| %>
 	<p>
-		<strong>Route</strong>: <%= bus ["ROUTE"] %><br />
-		<strong>Vehicle #</strong>: <%= bus ["VEHICLE"] %><br />
-		<strong>Next Stop</strong>: <%= bus ["TIMEPOINT"] %><br />
+		<strong>Route</strong>: <%= bus["ROUTE"] %><br />
+		<strong>Vehicle #</strong>: <%= bus["VEHICLE"] %><br />
+		<strong>Next Stop</strong>: <%= bus["TIMEPOINT"] %><br />
 	</p>
-		<script>
+	<script>
 		$(document).ready(function (){
-			function initialize() {
-				var myLatlng = new google.maps.LatLng(<%= @location.latitude %>,
-					<%= @location.longitude %>);
-				
-				var busLatlng = new google.maps.LatLng(<%= bus["LATITUDE"] %>, <%= bus["LONGITUDE"]%>);
-
+			function initialize(){
+				var userCoords = new google.maps.LatLng(<%= @location.latitude %>, <%= @location.longitude %>);
+				var busCoords = new google.maps.LatLng(<%= bus["LATITUDE"] %>, <%= bus["LONGITUDE"] %>);
 				var mapOptions = {
-					center: myLatlng,
-					zoom: 13,
-					scrollwheel: false
-				};
-
-				var map = new google.maps.Map(document.getElementById('map-canvas<%= index %>'),
-					mapOptions);
-
-				var marker = new google.maps.Marker({
-					position: busLatlng,
-					map: map,
-					animation: google.maps.Animation.DROP,
-					title: 'Hello World!'
-				});
-
-				google.maps.event.addListener(marker, 'click', function(){
-					infowindow.open(map,marker);
-				});
-
-				google.maps.event.addDomListener(window, 'load', initialize);
-
-			}
-
-			});
+		      center: userCoords,
+		      zoom: 13,
+		      scrollwheel: false
+		    };
+		      
+		    var map = new google.maps.Map(document.getElementById('map-canvas<%= index %>'), mapOptions);
+		    var coords = [userCoords, busCoords];
+		    var marker, i;
+				for (i = 0; i < coords.length; i++) {
+			    marker = new google.maps.Marker({
+			    	position: coords[i],
+			    	map: map,
+			    	animation: google.maps.Animation.DROP
+			    });
+			  }
+		    // var contentString = "Bus here!";
+		    // var infoWindow = new google.maps.InfoWindow({
+		    // 	content: contentString
+		    // });
+				// google.maps.event.addListener(marker, 'click', function() {
+				//     infowindow.open(map,marker);
+				// });
+		  }
+		    
+		  google.maps.event.addDomListener(window, 'load', initialize);
+		});
 
 			
 		</script>
